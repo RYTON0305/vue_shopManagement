@@ -11,12 +11,23 @@ const routes = [
   },
   {
     path: '/home',
-    component: () => import('@/components/Home')
+    component: () => import('@/components/Home'),
+    children:[
+      {
+        path:'/welcome',
+        component:()=>import('@/components/Welcome')
+      },
+      {
+        path:'/users',
+        component:()=>import('@/components/user/Users')
+      }
+    ],
+    redirect: '/welcome'
   },
-  {
-    path: '*',
-    redirect: '/login'
-  }
+  // {
+  //   path: '*',
+  //   redirect: '/login'
+  // }
 ]
 
 const router = new VueRouter({
