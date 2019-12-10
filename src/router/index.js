@@ -20,14 +20,22 @@ const routes = [
       {
         path:'/users',
         component:()=>import('@/components/user/Users')
+      },
+      {
+        path:'/rights',
+        component:()=>import('@/components/authority/Rights')
+      },
+      {
+        path:'/roles',
+        component:()=>import('@/components/authority/Roles')
       }
     ],
     redirect: '/welcome'
   },
-  // {
-  //   path: '*',
-  //   redirect: '/login'
-  // }
+  {
+    path: '*',
+    redirect: '/login'
+  }
 ]
 
 const router = new VueRouter({
