@@ -28,6 +28,10 @@ const routes = [
       {
         path:'/roles',
         component:()=>import('@/components/authority/Roles')
+      },
+      {
+        path:'/categories',
+        component:()=>import('@/components/goods/Category')
       }
     ],
     redirect: '/welcome'

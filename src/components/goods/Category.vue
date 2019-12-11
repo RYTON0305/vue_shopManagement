@@ -3,126 +3,98 @@
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
+      <el-breadcrumb-item>商品管理</el-breadcrumb-item>
+      <el-breadcrumb-item>商品分类</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!-- 卡片区域 -->
     <el-card>
-      <!-- 搜索用户区域 -->
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-input
-            @keyup.enter.native="getUserList"
-            clearable
-            @clear="getUserList"
-            v-model="queryInfo.query"
-            placeholder="请输入内容"
-          >
-            <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
-          </el-input>
-        </el-col>
-        <el-col :span="4">
-          <el-button type="primary" @click="addDialogVisible=true">添加用户</el-button>
+      <el-row>
+        <el-col>
+          <el-button type="primary" @click="showAddDialog">添加分类</el-button>
         </el-col>
       </el-row>
 
       <!-- 用户列表区域 -->
-      <el-table :data="userList" border stripe>
-        <el-table-column type="index"></el-table-column>
-        <el-table-column prop="username" label="姓名"></el-table-column>
-        <el-table-column prop="email" label="邮箱"></el-table-column>
-        <el-table-column prop="mobile" label="电话"></el-table-column>
-        <el-table-column prop="role_name" label="角色"></el-table-column>
-        <el-table-column prop="mg_state" label="状态">
-          <template slot-scope="scope">
-            <el-switch @change="userStateChange(scope.row)" v-model="scope.row.mg_state"></el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column width="180px" label="操作">
-          <template slot-scope="scope">
-            <!-- 编辑按钮 -->
-            <el-button
-              type="primary"
-              icon="el-icon-edit"
-              @click="showEditDialog(scope.row.id)"
-              size="mini"
-            ></el-button>
+      <tree-table
+        class="TreeTable"
+        :data="catesList"
+        :columns="columns"
+        :selection-type="false"
+        :expand-type="false"
+        :show-index="true"
+        index-text="#"
+        border
+        :show-row-hover="false"
+      >
+        <!-- 是否有效 -->
+        <template slot="isOk" slot-scope="scope">
+          <i v-if="!scope.row.cat_deleted" class="el-icon-success"></i>
+          <i v-else class="el-icon-error"></i>
+        </template>
 
-            <!-- 删除按钮 -->
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-              @click="deleteUserById(scope.row.id)"
-            ></el-button>
+        <!-- 分类等级 -->
+        <template slot="catesLevel" slot-scope="scope">
+          <el-tag v-if="scope.row.cat_level==0" type="primary">一级</el-tag>
+          <el-tag v-else-if="scope.row.cat_level==1" type="success">二级</el-tag>
+          <el-tag v-else-if="scope.row.cat_level==2" type="warning">三级</el-tag>
+        </template>
 
-            <!-- 分配角色 文字提示 -->
-            <el-tooltip
-              class="item"
-              effect="dark"
-              content="分配角色"
-              placement="top"
-              :enterable="false"
-            >
-              <!-- 分配角色 按钮 -->
-              <el-button
-                @click="allotRoles(scope.row)"
-                type="warning"
-                icon="el-icon-s-tools"
-                size="mini"
-              ></el-button>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-      </el-table>
+        <!-- 操作 -->
+        <template slot="catesOpt" slot-scope="scope">
+          <el-button size="mini" icon="el-icon-edit" type="primary">编辑</el-button>
+          <el-button size="mini" icon="el-icon-delete" type="danger">删除</el-button>
+        </template>
+      </tree-table>
 
       <!-- 分页区域 -->
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="queryInfo.pagenum"
-        :page-sizes="[1,2,5,10]"
+        :page-sizes="[3,5,10,15]"
         :page-size="queryInfo.pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
     </el-card>
 
-    <!-- 添加用户 的对话框 -->
-    <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="50%" @close="addDialogClose">
-      <!-- 添加用户的验证表单 -->
+    <!-- 添加分类 的对话框 -->
+    <el-dialog title="添加分类" :visible.sync="addDialogVisible" width="50%" @close="addDialogClose">
+      <!-- 添加分类的验证表单 -->
       <el-form
         status-icon
         :model="addForm"
         :rules="addFormRules"
         ref="addFormRef"
-        label-width="70px"
+        label-width="100px"
       >
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="addForm.username"></el-input>
+        <el-form-item label="分类名称" prop="cat_name">
+          <el-input v-model="addForm.cat_name"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="addForm.password" type="password"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="addForm.email"></el-input>
-        </el-form-item>
-        <el-form-item label="手机号" prop="mobile">
-          <el-input v-model="addForm.mobile"></el-input>
+        <el-form-item label="父级分类">
+          <!-- 父级分类级联选择框 -->
+          <el-cascader
+            clearable
+            change
+            v-model="selectedKeys"
+            :options="parentCatesList"
+            :props="cascadeProps"
+            @change="parentCatesChange"
+          ></el-cascader>
         </el-form-item>
       </el-form>
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialogVisible=false">取 消</el-button>
-        <el-button type="primary" @click="addUser">确 定</el-button>
+        <el-button type="primary" @click="addCate">确 定</el-button>
       </span>
     </el-dialog>
 
     <!-- 修改用户 的对话框 -->
-    <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="50%" @close="editDialogClose">
-      <!-- 修改用户 的表单 -->
-      <el-form
+    <!-- <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="50%" @close="editDialogClose"> -->
+    <!-- 修改用户 的表单 -->
+    <!-- <el-form
         status-icon
         :model="editForm"
         :rules="addFormRules"
@@ -144,10 +116,10 @@
         <el-button @click="editDialogVisible=false">取 消</el-button>
         <el-button type="primary" @click="editFormChange">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
 
     <!-- 分配角色 的对话框 -->
-    <el-dialog
+    <!-- <el-dialog
       title="分配角色"
       :visible.sync="allotDialogVisible"
       width="50%"
@@ -173,7 +145,7 @@
         <el-button @click="allotDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
   </div>
 </template>
 
@@ -181,99 +153,86 @@
 export default {
   name: "Users",
   data() {
-    // 验证邮箱的规则
-    var checkEmail = (rule, value, cb) => {
-      // 验证邮箱的正则表达式
-      const regEmail = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-      if (regEmail.test(value)) {
-        // 合法的邮箱
-        return cb();
-      }
-      cb(new Error("请输入合法的邮箱地址"));
-    };
-
-    // 验证手机号的规则
-    var checkMobile = (rule, value, cb) => {
-      // 验证手机号的正则表达式
-      const regMobile = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
-      if (regMobile.test(value)) {
-        // 合法的手机号
-        return cb();
-      }
-      cb(new Error("请输入合法的手机号码"));
-    };
     return {
       // 获取用户参数列表的对象
       queryInfo: {
-        query: "",
+        type: 3,
         pagenum: 1,
-        pagesize: 2
+        pagesize: 5
       },
-      userList: [],
+      catesList: [],
       total: 0,
 
-      // 控制添加用户对话框的显示和隐藏
+      // 控制添加分类对话框的显示和隐藏
       addDialogVisible: false,
 
-      // 添加用户的表单数据
+      // 添加分类的表单数据
       addForm: {
-        username: "",
-        password: ""
+        cat_name: "",
+        // 父级分类的id
+        cat_pid: 0,
+        cat_level: 0
       },
-
-      // 添加用户的验证规则对象
       addFormRules: {
-        username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 3, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur" }
-        ],
-        password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 8, max: 16, message: "长度在 8 到 16 个字符", trigger: "blur" }
-        ],
-        mobile: [
-          { required: false, message: "请输入手机号", trigger: "blur" },
-          { validator: checkMobile, trigger: "blur" }
-        ],
-        email: [
-          { required: false, message: "请输入邮箱", trigger: "blur" },
-          { validator: checkEmail, trigger: "blur" }
+        cat_name: [
+          {
+            required: true,
+            message: "请输入分类名称",
+            trigger: "blur"
+          }
         ]
       },
 
-      // 修改用户对话框的显示和隐藏
-      editDialogVisible: false,
+      // TreeTable的列属性
+      columns: [
+        {
+          label: "分类名称",
+          prop: "cat_name"
+        },
+        {
+          label: "是否有效",
+          type: "template",
+          template: "isOk"
+        },
+        {
+          label: "分类等级",
+          type: "template",
+          template: "catesLevel"
+        },
+        {
+          label: "操作",
+          type: "template",
+          template: "catesOpt"
+        }
+      ],
 
-      // 查询到的用户数据
-      editForm: {
-        username: "",
-        mobile: "",
-        email: ""
+      // 父级分类列表
+      parentCatesList: [],
+
+      // 级联选择器配置对象
+      cascadeProps: {
+        expandTrigger: "hover",
+        checkStrictly: true,
+        value: "cat_id",
+        label: "cat_name",
+        children: "children"
       },
 
-      // 分配角色用户对话框的显示和隐藏
-      allotDialogVisible: false,
-
-      // 需要被分配的用户信息
-      userInfo: {},
-
-      // 角色列表
-      rolesList: [],
-
-      // 已选中的角色id
-      selectRolesId: ""
+      // 级联选择器选中分类的id数组
+      selectedKeys: []
     };
   },
   created() {
-    this.getUserList();
+    this.getCatesList();
   },
   methods: {
-    async getUserList() {
-      const { data: res } = await this.$http.get("users", {
+    async getCatesList() {
+      const { data: res } = await this.$http.get("categories", {
         params: this.queryInfo
       });
-      if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
-      this.userList = res.data.users;
+      if (res.meta.status !== 200)
+        return this.$message.error("获取商品分类失败");
+      this.catesList = res.data.result;
       this.total = res.data.total;
       console.log(res);
     },
@@ -281,26 +240,15 @@ export default {
     handleSizeChange(newSize) {
       console.log(newSize);
       this.queryInfo.pagesize = newSize;
-      this.getUserList();
+      this.getCatesList();
     },
     // 监听页码值改变的事件
     handleCurrentChange(newPage) {
       console.log(newPage);
       this.queryInfo.pagenum = newPage;
-      this.getUserList();
+      this.getCatesList();
     },
-    // 监听Switch开关状态的改变
-    async userStateChange(userInfo) {
-      console.log("userInfo", userInfo);
-      const { data: res } = await this.$http.put(
-        `users/${userInfo.id}/state/${userInfo.mg_state}`
-      );
-      if (res.meta.status !== 200) {
-        userInfo.mg_state = !userInfo.mg_state;
-        return this.$message.error("更新用户状态失败");
-      }
-      this.$message.success("更新用户状态成功");
-    },
+
     // 监听添加用户对话框关闭的操作
     addDialogClose(done) {
       console.log(done);
@@ -311,23 +259,60 @@ export default {
       //   })
       //   .catch(_ => {});
       this.$refs.addFormRef.resetFields();
+      this.selectedKeys = [];
+      this.addForm = {
+        cat_name: "",
+        cat_pid: 0,
+        cat_level: 0
+      };
     },
-    // 点击按钮，添加新用户
-    addUser() {
+    // 点击按钮，添加新分类
+    addCate() {
       this.$refs.addFormRef.validate(valid => {
         console.log(valid);
         if (!valid) return;
         // 发起网络请求
-        this.$http.post("users", this.addForm).then(({ data: res }) => {
+        this.$http.post("categories", this.addForm).then(({ data: res }) => {
           console.log(res);
-          if (res.meta.status !== 201) return this.$message.error(res.meta.msg);
-          this.$message.success(res.meta.msg);
-          // 用户添加成功，隐藏添加用户对话框
+          if (res.meta.status !== 201) return this.$message.error('分类添加失败');
+          this.$message.success('分类添加成功');
+          // 分类添加成功，隐藏添加分类对话框
           this.addDialogVisible = false;
-          // 重新获取用户列表
-          this.getUserList();
+          // 重新获取分类列表
+          this.getCatesList();
         });
       });
+    },
+
+    // 获取父级分类的数据列表
+    getParentCatesList() {
+      this.$http.get("categories").then(({ data: res }) => {
+        console.log(res);
+        if (res.meta.status !== 200)
+          return this.$message.error("获取父级分类失败");
+        // 存取父级分类列表
+        this.parentCatesList = res.data;
+        console.log(this.parentCatesList);
+      });
+    },
+    // 展示添加分类对话框
+    showAddDialog() {
+      this.getParentCatesList();
+      this.addDialogVisible = true;
+    },
+
+    // 父级分类级联选择器选项变化后触发
+    parentCatesChange() {
+      // 选中的分类长度为0，默认为一级分类
+      if (this.selectedKeys.length > 0) {
+        this.addForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1];
+        this.addForm.cat_level = this.selectedKeys.length;
+        return;
+      } else {
+        this.addForm.cat_pid = 0;
+        this.addForm.cat_level = 0;
+      }
+      console.log(this.selectedKeys);
     },
 
     // 展示修改用户 的对话框
@@ -436,4 +421,18 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.el-icon-success {
+  color: #0e9eb0;
+  font-size: 15px;
+}
+.el-icon-error {
+  color: #f56c6c;
+  font-size: 15px;
+}
+.TreeTable {
+  margin-top: 15px;
+}
+.el-cascader {
+  width: 100%;
+}
 </style>
