@@ -21,10 +21,14 @@ html,body,#app {
 }
 
 .el-cascader-panel {
-  height: 400px;
+  height: 300px;
 }
 
 .deleteButton {
   background-color: #F56C6C!important;
   border-color: #F56C6C!important;
+}
+
+.ql-editor{
+  min-height: 300px;
 }

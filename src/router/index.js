@@ -12,38 +12,46 @@ const routes = [
   {
     path: '/home',
     component: () => import('@/components/Home'),
-    children:[
+    children: [
       {
-        path:'/welcome',
-        component:()=>import('@/components/Welcome')
+        path: '/welcome',
+        component: () => import('@/components/Welcome')
       },
       {
-        path:'/users',
-        component:()=>import('@/components/user/Users')
+        path: '/users',
+        component: () => import('@/components/user/Users')
       },
       {
-        path:'/rights',
-        component:()=>import('@/components/authority/Rights')
+        path: '/rights',
+        component: () => import('@/components/authority/Rights')
       },
       {
-        path:'/roles',
-        component:()=>import('@/components/authority/Roles')
+        path: '/roles',
+        component: () => import('@/components/authority/Roles')
       },
       {
-        path:'/categories',
-        component:()=>import('@/components/goods/Category')
+        path: '/categories',
+        component: () => import('@/components/goods/Category')
       },
       {
-        path:'/params',
-        component:()=>import('@/components/goods/Params')
+        path: '/params',
+        component: () => import('@/components/goods/Params')
+      },
+      {
+        path: '/goods',
+        component: () => import('@/components/goods/Goods'),
+      },
+      {
+        path: '/goods/addGoods',
+        component: () => import('@/components/goods/AddGoods'),
       }
     ],
     redirect: '/welcome'
   },
-  {
-    path: '*',
-    redirect: '/login'
-  }
+  // {
+  //   path: '*',
+  //   redirect: '/login'
+  // }
 ]
 
 const router = new VueRouter({
