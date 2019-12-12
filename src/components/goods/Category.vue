@@ -76,7 +76,6 @@
           <!-- 父级分类级联选择框 -->
           <el-cascader
             clearable
-            change
             v-model="selectedKeys"
             :options="parentCatesList"
             :props="cascadeProps"
