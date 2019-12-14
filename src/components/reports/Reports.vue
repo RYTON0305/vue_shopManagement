@@ -60,7 +60,7 @@ export default {
 
     const { data: res } = await this.$http.get("reports/type/1");
     if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
-    this.$message.success(res.meta.msg);
+    // this.$message.success(res.meta.msg);
     console.log(res.data);
 
     const result=_.merge(res.data,this.options)
