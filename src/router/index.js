@@ -54,11 +54,11 @@ const routes = [
       }
     ],
     redirect: '/welcome'
+  },
+  {
+    path: '*',
+    redirect: '/login'
   }
-  // {
-  //   path: '*',
-  //   redirect: '/login'
-  // }
 ]
 
 const router = new VueRouter({
