@@ -10,11 +10,18 @@
     <!-- 卡片区域 -->
     <el-card>
       <!-- 表格区域 -->
-      <el-table :data="rightsList" border style="width: 100%" stripe>
+      <el-table :data="rightsList"
+                border
+                style="width: 100%"
+                stripe>
         <el-table-column type="index"></el-table-column>
-        <el-table-column prop="authName" label="权限名称"></el-table-column>
-        <el-table-column prop="path" label="路径"></el-table-column>
-        <el-table-column align="center" prop="level" label="权限等级">
+        <el-table-column prop="authName"
+                         label="权限名称"></el-table-column>
+        <el-table-column prop="path"
+                         label="路径"></el-table-column>
+        <el-table-column align="center"
+                         prop="level"
+                         label="权限等级">
           <template slot-scope="scope">
             <el-tag :type="scope.row.level|rightsTypeFilter">{{scope.row.level|rightsLevelFilter}}</el-tag>
           </template>
@@ -32,13 +39,13 @@ export default {
       switch (level) {
         case '0':
           return '一级'
-          break
+        //  break
         case '1':
           return '二级'
-          break
+        //  break
         case '2':
           return '三级'
-          break
+        //  break
         default:
           return '无'
       }
@@ -47,13 +54,13 @@ export default {
       switch (level) {
         case '0':
           return ''
-          break
+        //  break
         case '1':
           return 'success'
-          break
+        //  break
         case '2':
           return 'danger'
-          break
+        //  break
         default:
           return ''
       }

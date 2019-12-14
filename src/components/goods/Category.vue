@@ -11,82 +11,92 @@
     <el-card>
       <el-row>
         <el-col>
-          <el-button type="primary" @click="showAddDialog">添加分类</el-button>
+          <el-button type="primary"
+                     @click="showAddDialog">添加分类</el-button>
         </el-col>
       </el-row>
 
       <!-- 用户列表区域 -->
-      <tree-table
-        class="TreeTable"
-        :data="catesList"
-        :columns="columns"
-        :selection-type="false"
-        :expand-type="false"
-        :show-index="true"
-        index-text="#"
-        border
-        :show-row-hover="false"
-      >
+      <tree-table class="TreeTable"
+                  :data="catesList"
+                  :columns="columns"
+                  :selection-type="false"
+                  :expand-type="false"
+                  :show-index="true"
+                  index-text="#"
+                  border
+                  :show-row-hover="false">
         <!-- 是否有效 -->
-        <template slot="isOk" slot-scope="scope">
-          <i v-if="!scope.row.cat_deleted" class="el-icon-success"></i>
-          <i v-else class="el-icon-error"></i>
+        <template slot="isOk"
+                  slot-scope="scope">
+          <i v-if="!scope.row.cat_deleted"
+             class="el-icon-success"></i>
+          <i v-else
+             class="el-icon-error"></i>
         </template>
 
         <!-- 分类等级 -->
-        <template slot="catesLevel" slot-scope="scope">
-          <el-tag v-if="scope.row.cat_level==0" type="primary">一级</el-tag>
-          <el-tag v-else-if="scope.row.cat_level==1" type="success">二级</el-tag>
-          <el-tag v-else-if="scope.row.cat_level==2" type="warning">三级</el-tag>
+        <template slot="catesLevel"
+                  slot-scope="scope">
+          <el-tag v-if="scope.row.cat_level==0"
+                  type="primary">一级</el-tag>
+          <el-tag v-else-if="scope.row.cat_level==1"
+                  type="success">二级</el-tag>
+          <el-tag v-else-if="scope.row.cat_level==2"
+                  type="warning">三级</el-tag>
         </template>
 
         <!-- 操作 -->
-        <template slot="catesOpt" slot-scope="scope">
-          <el-button size="mini" icon="el-icon-edit" type="primary">编辑</el-button>
-          <el-button size="mini" icon="el-icon-delete" type="danger">删除</el-button>
+        <template slot="catesOpt">
+          <el-button size="mini"
+                     icon="el-icon-edit"
+                     type="primary">编辑</el-button>
+          <el-button size="mini"
+                     icon="el-icon-delete"
+                     type="danger">删除</el-button>
         </template>
       </tree-table>
 
       <!-- 分页区域 -->
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="queryInfo.pagenum"
-        :page-sizes="[3,5,10,15]"
-        :page-size="queryInfo.pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination @size-change="handleSizeChange"
+                     @current-change="handleCurrentChange"
+                     :current-page="queryInfo.pagenum"
+                     :page-sizes="[3,5,10,15]"
+                     :page-size="queryInfo.pagesize"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     :total="total"></el-pagination>
     </el-card>
 
     <!-- 添加分类 的对话框 -->
-    <el-dialog title="添加分类" :visible.sync="addDialogVisible" width="50%" @close="addDialogClose">
+    <el-dialog title="添加分类"
+               :visible.sync="addDialogVisible"
+               width="50%"
+               @close="addDialogClose">
       <!-- 添加分类的验证表单 -->
-      <el-form
-        status-icon
-        :model="addForm"
-        :rules="addFormRules"
-        ref="addFormRef"
-        label-width="100px"
-      >
-        <el-form-item label="分类名称" prop="cat_name">
+      <el-form status-icon
+               :model="addForm"
+               :rules="addFormRules"
+               ref="addFormRef"
+               label-width="100px">
+        <el-form-item label="分类名称"
+                      prop="cat_name">
           <el-input v-model="addForm.cat_name"></el-input>
         </el-form-item>
         <el-form-item label="父级分类">
           <!-- 父级分类级联选择框 -->
-          <el-cascader
-            clearable
-            v-model="selectedKeys"
-            :options="parentCatesList"
-            :props="cascadeProps"
-            @change="parentCatesChange"
-          ></el-cascader>
+          <el-cascader clearable
+                       v-model="selectedKeys"
+                       :options="parentCatesList"
+                       :props="cascadeProps"
+                       @change="parentCatesChange"></el-cascader>
         </el-form-item>
       </el-form>
 
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer"
+            class="dialog-footer">
         <el-button @click="addDialogVisible=false">取 消</el-button>
-        <el-button type="primary" @click="addCate">确 定</el-button>
+        <el-button type="primary"
+                   @click="addCate">确 定</el-button>
       </span>
     </el-dialog>
 
