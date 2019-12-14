@@ -32,3 +32,6 @@ html,body,#app {
 .ql-editor{
   min-height: 300px;
 }
+.el-pagination{
+text-align: center;
+}

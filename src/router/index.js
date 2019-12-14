@@ -44,7 +44,11 @@ const routes = [
       {
         path: '/goods/addGoods',
         component: () => import('@/components/goods/AddGoods'),
-      }
+      },
+      {
+        path: '/orders',
+        component: () => import('@/components/orders/Orders'),
+      },
     ],
     redirect: '/welcome'
   },
