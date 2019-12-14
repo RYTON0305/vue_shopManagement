@@ -48,6 +48,10 @@ const routes = [
       {
         path: '/orders',
         component: () => import('@/components/orders/Orders'),
+      }, 
+      {
+        path: '/reports',
+        component: () => import('@/components/reports/Reports'),
       },
     ],
     redirect: '/welcome'
