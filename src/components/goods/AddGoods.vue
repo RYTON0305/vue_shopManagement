@@ -103,200 +103,198 @@
   </div>
 </template>
 <script>
-import _ from "lodash";
+import _ from 'lodash'
 export default {
-  name: "AddGoods",
-  data() {
+  name: 'AddGoods',
+  data () {
     return {
-      activeIndex: "0",
+      activeIndex: '0',
 
       addForm: {
-        goods_name: "",
+        goods_name: '',
         goods_price: 0,
         goods_weight: 0,
         goods_number: 0,
         goods_cat: [],
         pics: [],
-        goods_introduce: "",
+        goods_introduce: '',
         attrs: []
       },
 
       // 添加商品的验证规则对象
       addFormRules: {
         goods_name: [
-          { required: true, message: "请输入商品名称", trigger: "blur" }
+          { required: true, message: '请输入商品名称', trigger: 'blur' }
         ],
         goods_price: [
-          { required: true, message: "请输入商品价格", trigger: "blur" }
+          { required: true, message: '请输入商品价格', trigger: 'blur' }
         ],
         goods_weight: [
-          { required: true, message: "请输入商品重量", trigger: "blur" }
+          { required: true, message: '请输入商品重量', trigger: 'blur' }
         ],
         goods_number: [
-          { required: true, message: "请输入商品数量", trigger: "blur" }
+          { required: true, message: '请输入商品数量', trigger: 'blur' }
         ],
         goods_cat: [
-          { required: true, message: "请选择商品分类", trigger: "blur" }
+          { required: true, message: '请选择商品分类', trigger: 'blur' }
         ]
       },
       catesList: [],
       selectedKeys: [],
       // 级联选择器配置对象
       cascadeProps: {
-        expandTrigger: "hover",
+        expandTrigger: 'hover',
         // checkStrictly: true,
-        value: "cat_id",
-        label: "cat_name",
-        children: "children"
+        value: 'cat_id',
+        label: 'cat_name',
+        children: 'children'
       },
 
       manyTableData: [],
       onlyTableData: [],
       // 上传图片的URL地址
-      uploadURL: "http://127.0.0.1:8888/api/private/v1/upload",
+      uploadURL: 'http://127.0.0.1:8888/api/private/v1/upload',
       // 图片上传组件的请求头对象
       headerObj: {
-        Authorization: window.sessionStorage.getItem("token")
+        Authorization: window.sessionStorage.getItem('token')
       },
       // 预览图片路径
-      previewPath: "",
-      previewName: "",
+      previewPath: '',
+      previewName: '',
       preViewDialogVisible: false
-    };
+    }
   },
-  created() {
-    this.getCatesList();
+  created () {
+    this.getCatesList()
   },
   methods: {
-    addUser() {
+    addUser () {
       this.$refs.addFormRef.validate(valid => {
-        console.log(valid);
-        if (!valid) return;
+        console.log(valid)
+        if (!valid) return
         // 发起网络请求
-        this.$http.post("users", this.addForm).then(({ data: res }) => {
-          console.log(res);
-          if (res.meta.status !== 201) return this.$message.error(res.meta.msg);
-          this.$message.success(res.meta.msg);
+        this.$http.post('users', this.addForm).then(({ data: res }) => {
+          console.log(res)
+          if (res.meta.status !== 201) return this.$message.error(res.meta.msg)
+          this.$message.success(res.meta.msg)
           // 用户添加成功，隐藏添加用户对话框
-          this.addDialogVisible = false;
+          this.addDialogVisible = false
           // 重新获取用户列表
-          this.getUserList();
-        });
-      });
+          this.getUserList()
+        })
+      })
     },
-    async getCatesList() {
-      const { data: res } = await this.$http.get("categories");
-      if (res.meta.status !== 200)
-        return this.$message.error("获取商品分类失败");
-      this.catesList = res.data;
-      console.log(this.catesList);
+    async getCatesList () {
+      const { data: res } = await this.$http.get('categories')
+      if (res.meta.status !== 200) { return this.$message.error('获取商品分类失败') }
+      this.catesList = res.data
+      console.log(this.catesList)
     },
-    catesChange() {
+    catesChange () {
       if (this.addForm.goods_cat.length !== 3) {
-        this.addForm.goods_cat = [];
+        this.addForm.goods_cat = []
       }
       // this.getParamsList();
     },
     // tab标签页切换判断
-    beforeTabLeave(activeIndex, oldActiveIndex) {
+    beforeTabLeave (activeIndex, oldActiveIndex) {
       if (oldActiveIndex == 0 && this.addForm.goods_cat.length !== 3) {
-        this.$message.error("请选择商品分类");
-        return false;
+        this.$message.error('请选择商品分类')
+        return false
       }
     },
-    async tabClick() {
+    async tabClick () {
       // console.log(this.activeIndex);
       if (this.activeIndex == 1) {
         const { data: res } = await this.$http.get(
           `categories/${this.cateId}/attributes`,
-          { params: { sel: "many" } }
-        );
-        if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
+          { params: { sel: 'many' } }
+        )
+        if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
 
         res.data.forEach(item => {
-          item.attr_vals = item.attr_vals ? item.attr_vals.split(" ") : [];
-        });
-        this.manyTableData = res.data;
-        console.log(this.manyTableData);
+          item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
+        })
+        this.manyTableData = res.data
+        console.log(this.manyTableData)
         // this.$messaage.success(res.meta.msg)
       } else if (this.activeIndex == 2) {
         const { data: res } = await this.$http.get(
           `categories/${this.cateId}/attributes`,
-          { params: { sel: "only" } }
-        );
-        if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
-        this.onlyTableData = res.data;
-        console.log(this.onlyTableData);
+          { params: { sel: 'only' } }
+        )
+        if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+        this.onlyTableData = res.data
+        console.log(this.onlyTableData)
       }
     },
     // 处理图片预览效果
-    handlePreview(file) {
-      console.log(file);
+    handlePreview (file) {
+      console.log(file)
 
-      this.previewPath = file.response.data.url;
-      this.previewName = file.raw.name;
-      this.preViewDialogVisible = true;
+      this.previewPath = file.response.data.url
+      this.previewName = file.raw.name
+      this.preViewDialogVisible = true
     },
     // 处理图片移除操作
-    handleRemove(file) {
-      const filePath = file.response.data.tmp_path;
+    handleRemove (file) {
+      const filePath = file.response.data.tmp_path
       const index = this.addForm.pics.findIndex(x => {
-        x.pic = filePath;
-      });
-      this.addForm.pics.splice(index, 1);
-      console.log(this.addForm);
+        x.pic = filePath
+      })
+      this.addForm.pics.splice(index, 1)
+      console.log(this.addForm)
     },
-    handleSuccess(res) {
-      console.log(res);
-      const picInfo = { pic: res.data.tmp_path };
-      this.addForm.pics.push(picInfo);
-      console.log(this.addForm);
+    handleSuccess (res) {
+      console.log(res)
+      const picInfo = { pic: res.data.tmp_path }
+      this.addForm.pics.push(picInfo)
+      console.log(this.addForm)
     },
-   addGoods() {
+    addGoods () {
       this.$refs.addFormRef.validate(async valid => {
-        console.log(valid);
-        console.log(this.addForm);
-        if (!valid) return this.$message.warning("请填写必要的表单项");
-        const cloneForm = _.cloneDeep(this.addForm);
-        cloneForm.goods_cat = cloneForm.goods_cat.join(",");
+        console.log(valid)
+        console.log(this.addForm)
+        if (!valid) return this.$message.warning('请填写必要的表单项')
+        const cloneForm = _.cloneDeep(this.addForm)
+        cloneForm.goods_cat = cloneForm.goods_cat.join(',')
         // console.log("manyTableData", this.manyTableData);
         // console.log("onlyTableData", this.onlyTableData);
-if(!(this.manyTableData&&this.onlyTableData)) return this.$message.warning('请依次填写表单')
+        if (!(this.manyTableData && this.onlyTableData)) return this.$message.warning('请依次填写表单')
         this.manyTableData.forEach(item => {
           const newInfo = {
             attr_id: item.attr_id,
-            attr_value: item.attr_vals.join(" ")
-          };
-          this.addForm.attrs.push(newInfo);
-        });
+            attr_value: item.attr_vals.join(' ')
+          }
+          this.addForm.attrs.push(newInfo)
+        })
         this.onlyTableData.forEach(item => {
           const newInfo = {
             attr_id: item.attr_id,
             attr_value: item.attr_vals
-          };
-          this.addForm.attrs.push(newInfo);
-        });
-        cloneForm.attrs = this.addForm.attrs;
-        console.log("addForm", this.addForm);
+          }
+          this.addForm.attrs.push(newInfo)
+        })
+        cloneForm.attrs = this.addForm.attrs
+        console.log('addForm', this.addForm)
 
-        console.log("cloneForm", cloneForm);
-        const { data: res } = await this.$http.post('goods',cloneForm);
-        if (res.meta.status !== 201) return this.$message.error(res.meta.msg);
+        console.log('cloneForm', cloneForm)
+        const { data: res } = await this.$http.post('goods', cloneForm)
+        if (res.meta.status !== 201) return this.$message.error(res.meta.msg)
         this.$message.success('商品添加成功')
         this.$router.push('/goods')
-
-      });
+      })
     }
   },
   computed: {
-    cateId() {
+    cateId () {
       if (this.addForm.goods_cat.length === 3) {
-        return this.addForm.goods_cat[2];
+        return this.addForm.goods_cat[2]
       }
-      return null;
+      return null
     }
   }
-};
+}
 </script>
 <style lang='less' scoped>
 .el-steps {

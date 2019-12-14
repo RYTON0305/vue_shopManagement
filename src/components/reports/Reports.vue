@@ -15,30 +15,30 @@
   </div>
 </template>
 <script>
-import echarts from "echarts";
-import _ from "lodash";
+import echarts from 'echarts'
+import _ from 'lodash'
 export default {
-  name: "Reports",
-  data() {
+  name: 'Reports',
+  data () {
     return {
       // 需要合并的echart选项
       options: {
         title: {
-          text: "用户来源"
+          text: '用户来源'
         },
         tooltip: {
-          trigger: "axis",
+          trigger: 'axis',
           axisPointer: {
-            type: "cross",
+            type: 'cross',
             label: {
-              backgroundColor: "#E9EEF3"
+              backgroundColor: '#E9EEF3'
             }
           }
         },
         grid: {
-          left: "3%",
-          right: "4%",
-          bottom: "3%",
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
           containLabel: true
         },
         xAxis: [
@@ -48,26 +48,26 @@ export default {
         ],
         yAxis: [
           {
-            type: "value"
+            type: 'value'
           }
         ]
       }
-    };
+    }
   },
-  async mounted() {
+  async mounted () {
     // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById("main"));
+    var myChart = echarts.init(document.getElementById('main'))
 
-    const { data: res } = await this.$http.get("reports/type/1");
-    if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
+    const { data: res } = await this.$http.get('reports/type/1')
+    if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
     // this.$message.success(res.meta.msg);
-    console.log(res.data);
+    console.log(res.data)
 
-    const result=_.merge(res.data,this.options)
+    const result = _.merge(res.data, this.options)
     // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(result);
+    myChart.setOption(result)
   }
-};
+}
 </script>
 <style lang='less' scoped>
 </style>

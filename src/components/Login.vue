@@ -26,50 +26,50 @@
 </template>
 
 <script>
-import { async } from 'q';
+import { async } from 'q'
 export default {
-  name: "Login",
-  data() {
+  name: 'Login',
+  data () {
     return {
       // 表单的数据绑定对象
       loginForm: {
-        username: "admin",
-        password: "123456"
+        username: 'admin',
+        password: '123456'
       },
       // 表单的验证规则
       loginFormRules: {
         // 验证用户名是否合法
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 4, max: 16, message: "长度在 4 到 16 个字符", trigger: "blur" }
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 4, max: 16, message: '长度在 4 到 16 个字符', trigger: 'blur' }
         ],
         // 验证密码是否合法
         password: [
-          { required: true, message: "请输入登录密码", trigger: "blur" },
-          { min: 6, max: 16, message: "长度在 6 到 16 个字符", trigger: "blur" }
+          { required: true, message: '请输入登录密码', trigger: 'blur' },
+          { min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
-  methods:{
+  methods: {
     // 点击重置按钮,重置登录表单
-    resetLoginForm(){
+    resetLoginForm () {
       this.$refs.loginFormRef.resetFields()
     },
     // 登录验证
-    login(){
-      this.$refs.loginFormRef.validate(async (valid)=>{
-        if(!valid) return;
-        const {data:res}=await this.$http.post('login',this.loginForm)
+    login () {
+      this.$refs.loginFormRef.validate(async (valid) => {
+        if (!valid) return
+        const { data: res } = await this.$http.post('login', this.loginForm)
         console.log(res)
-        if(res.meta.status!==200) return this.$message.error('登录失败')
+        if (res.meta.status !== 200) return this.$message.error('登录失败')
         this.$message.success('登录成功')
-        window.sessionStorage.setItem('token',res.data.token)
+        window.sessionStorage.setItem('token', res.data.token)
         this.$router.push('/home')
       })
     }
   }
-};
+}
 </script>
 
 <style lang='less' scoped>

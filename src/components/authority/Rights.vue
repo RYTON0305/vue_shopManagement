@@ -26,59 +26,58 @@
 
 <script>
 export default {
-  name: "Rights",
+  name: 'Rights',
   filters: {
-    rightsLevelFilter(level) {
+    rightsLevelFilter (level) {
       switch (level) {
-        case "0":
-          return "一级";
-          break;
-        case "1":
-          return "二级";
-          break;
-        case "2":
-          return "三级";
-          break;
+        case '0':
+          return '一级'
+          break
+        case '1':
+          return '二级'
+          break
+        case '2':
+          return '三级'
+          break
         default:
-          return "无";
+          return '无'
       }
     },
-    rightsTypeFilter(level) {
+    rightsTypeFilter (level) {
       switch (level) {
-        case "0":
-          return "";
-          break;
-        case "1":
-          return "success";
-          break;
-        case "2":
-          return "danger";
-          break;
+        case '0':
+          return ''
+          break
+        case '1':
+          return 'success'
+          break
+        case '2':
+          return 'danger'
+          break
         default:
-          return "";
+          return ''
       }
     }
   },
-  data() {
+  data () {
     return {
       rightsList: []
-    };
+    }
   },
-  created() {
-    this.getRightsList();
+  created () {
+    this.getRightsList()
   },
   methods: {
-    getRightsList() {
+    getRightsList () {
       this.$http.get(`rights/list`).then(({ data: res }) => {
-        console.log(res);
-        if (res.meta.status !== 200)
-          return this.$message.error("获取权限列表失败");
-        this.rightsList = res.data;
-        console.log(this.rightsList);
-      });
+        console.log(res)
+        if (res.meta.status !== 200) { return this.$message.error('获取权限列表失败') }
+        this.rightsList = res.data
+        console.log(this.rightsList)
+      })
     }
   }
-};
+}
 </script>
 
 <style lang='less' scoped>

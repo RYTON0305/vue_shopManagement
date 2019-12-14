@@ -150,8 +150,8 @@
 
 <script>
 export default {
-  name: "Users",
-  data() {
+  name: 'Users',
+  data () {
     return {
       // 获取用户参数列表的对象
       queryInfo: {
@@ -167,7 +167,7 @@ export default {
 
       // 添加分类的表单数据
       addForm: {
-        cat_name: "",
+        cat_name: '',
         // 父级分类的id
         cat_pid: 0,
         cat_level: 0
@@ -176,8 +176,8 @@ export default {
         cat_name: [
           {
             required: true,
-            message: "请输入分类名称",
-            trigger: "blur"
+            message: '请输入分类名称',
+            trigger: 'blur'
           }
         ]
       },
@@ -185,23 +185,23 @@ export default {
       // TreeTable的列属性
       columns: [
         {
-          label: "分类名称",
-          prop: "cat_name"
+          label: '分类名称',
+          prop: 'cat_name'
         },
         {
-          label: "是否有效",
-          type: "template",
-          template: "isOk"
+          label: '是否有效',
+          type: 'template',
+          template: 'isOk'
         },
         {
-          label: "分类等级",
-          type: "template",
-          template: "catesLevel"
+          label: '分类等级',
+          type: 'template',
+          template: 'catesLevel'
         },
         {
-          label: "操作",
-          type: "template",
-          template: "catesOpt"
+          label: '操作',
+          type: 'template',
+          template: 'catesOpt'
         }
       ],
 
@@ -210,213 +210,209 @@ export default {
 
       // 级联选择器配置对象
       cascadeProps: {
-        expandTrigger: "hover",
+        expandTrigger: 'hover',
         checkStrictly: true,
-        value: "cat_id",
-        label: "cat_name",
-        children: "children"
+        value: 'cat_id',
+        label: 'cat_name',
+        children: 'children'
       },
 
       // 级联选择器选中分类的id数组
       selectedKeys: []
-    };
+    }
   },
-  created() {
-    this.getCatesList();
+  created () {
+    this.getCatesList()
   },
   methods: {
-    async getCatesList() {
-      const { data: res } = await this.$http.get("categories", {
+    async getCatesList () {
+      const { data: res } = await this.$http.get('categories', {
         params: this.queryInfo
-      });
-      if (res.meta.status !== 200)
-        return this.$message.error("获取商品分类失败");
-      this.catesList = res.data.result;
-      this.total = res.data.total;
-      console.log(res);
+      })
+      if (res.meta.status !== 200) { return this.$message.error('获取商品分类失败') }
+      this.catesList = res.data.result
+      this.total = res.data.total
+      console.log(res)
     },
     // 监听pagesize改变的事件
-    handleSizeChange(newSize) {
-      console.log(newSize);
-      this.queryInfo.pagesize = newSize;
-      this.getCatesList();
+    handleSizeChange (newSize) {
+      console.log(newSize)
+      this.queryInfo.pagesize = newSize
+      this.getCatesList()
     },
     // 监听页码值改变的事件
-    handleCurrentChange(newPage) {
-      console.log(newPage);
-      this.queryInfo.pagenum = newPage;
-      this.getCatesList();
+    handleCurrentChange (newPage) {
+      console.log(newPage)
+      this.queryInfo.pagenum = newPage
+      this.getCatesList()
     },
 
     // 监听添加用户对话框关闭的操作
-    addDialogClose(done) {
-      console.log(done);
+    addDialogClose (done) {
+      console.log(done)
       // this.$msgBox
       //   .confirm("确认关闭？")
       //   .then(_ => {
       //     done();
       //   })
       //   .catch(_ => {});
-      this.$refs.addFormRef.resetFields();
-      this.selectedKeys = [];
+      this.$refs.addFormRef.resetFields()
+      this.selectedKeys = []
       this.addForm = {
-        cat_name: "",
+        cat_name: '',
         cat_pid: 0,
         cat_level: 0
-      };
+      }
     },
     // 点击按钮，添加新分类
-    addCate() {
+    addCate () {
       this.$refs.addFormRef.validate(valid => {
-        console.log(valid);
-        if (!valid) return;
+        console.log(valid)
+        if (!valid) return
         // 发起网络请求
-        this.$http.post("categories", this.addForm).then(({ data: res }) => {
-          console.log(res);
-          if (res.meta.status !== 201) return this.$message.error('分类添加失败');
-          this.$message.success('分类添加成功');
+        this.$http.post('categories', this.addForm).then(({ data: res }) => {
+          console.log(res)
+          if (res.meta.status !== 201) return this.$message.error('分类添加失败')
+          this.$message.success('分类添加成功')
           // 分类添加成功，隐藏添加分类对话框
-          this.addDialogVisible = false;
+          this.addDialogVisible = false
           // 重新获取分类列表
-          this.getCatesList();
-        });
-      });
+          this.getCatesList()
+        })
+      })
     },
 
     // 获取父级分类的数据列表
-    getParentCatesList() {
-      this.$http.get("categories").then(({ data: res }) => {
-        console.log(res);
-        if (res.meta.status !== 200)
-          return this.$message.error("获取父级分类失败");
+    getParentCatesList () {
+      this.$http.get('categories').then(({ data: res }) => {
+        console.log(res)
+        if (res.meta.status !== 200) { return this.$message.error('获取父级分类失败') }
         // 存取父级分类列表
-        this.parentCatesList = res.data;
-        console.log(this.parentCatesList);
-      });
+        this.parentCatesList = res.data
+        console.log(this.parentCatesList)
+      })
     },
     // 展示添加分类对话框
-    showAddDialog() {
-      this.getParentCatesList();
-      this.addDialogVisible = true;
+    showAddDialog () {
+      this.getParentCatesList()
+      this.addDialogVisible = true
     },
 
     // 父级分类级联选择器选项变化后触发
-    parentCatesChange() {
+    parentCatesChange () {
       // 选中的分类长度为0，默认为一级分类
       if (this.selectedKeys.length > 0) {
-        this.addForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1];
-        this.addForm.cat_level = this.selectedKeys.length;
-        return;
+        this.addForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1]
+        this.addForm.cat_level = this.selectedKeys.length
+        return
       } else {
-        this.addForm.cat_pid = 0;
-        this.addForm.cat_level = 0;
+        this.addForm.cat_pid = 0
+        this.addForm.cat_level = 0
       }
-      console.log(this.selectedKeys);
+      console.log(this.selectedKeys)
     },
 
     // 展示修改用户 的对话框
-    showEditDialog(id) {
-      this.editDialogVisible = true;
+    showEditDialog (id) {
+      this.editDialogVisible = true
       this.$http.get(`users/${id}`).then(({ data: res }) => {
-        console.log(res);
-        if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
+        console.log(res)
+        if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
         // this.$message.success(res.meta.msg)
         // console.log('qian',this.editForm)
 
-        this.editForm = res.data;
-        console.log("editForm", this.editForm);
-      });
+        this.editForm = res.data
+        console.log('editForm', this.editForm)
+      })
     },
 
     // 监听修改用户 对话框关闭的操作
-    editDialogClose() {
+    editDialogClose () {
       // this.$msgBox
       //   .confirm("确认关闭？")
       //   .then(_ => {
       //     done();
       //   })
       //   .catch(_ => {});
-      this.$refs.editFormRef.resetFields();
+      this.$refs.editFormRef.resetFields()
     },
 
     // 修改用户表单 提交
-    editFormChange() {
+    editFormChange () {
       this.$refs.editFormRef.validate(valid => {
-        if (!valid) return;
+        if (!valid) return
         this.$http
           .put(`users/${this.editForm.id}`, {
             mobile: this.editForm.mobile,
             email: this.editForm.email
           })
           .then(({ data: res }) => {
-            console.log("res", res);
-            if (res.meta.status !== 200)
-              return this.$message.error("更新用户信息失败");
-            this.editDialogVisible = false;
-            this.getUserList();
-            this.$message.success("修改成功");
-          });
-      });
+            console.log('res', res)
+            if (res.meta.status !== 200) { return this.$message.error('更新用户信息失败') }
+            this.editDialogVisible = false
+            this.getUserList()
+            this.$message.success('修改成功')
+          })
+      })
     },
 
     // 删除用户
-    deleteUserById(id) {
+    deleteUserById (id) {
       this.$msgBox
-        .confirm("此操作将永久删除该用户, 是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
+        .confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
         .then(_ => {
           this.$http.delete(`users/${id}`, id).then(({ data: res }) => {
-            if (res.meta.status !== 200) return this.$message.error("删除失败");
-          });
-          this.$message.success("删除成功");
-          this.getUserList();
+            if (res.meta.status !== 200) return this.$message.error('删除失败')
+          })
+          this.$message.success('删除成功')
+          this.getUserList()
         })
         .catch(_ => {
-          this.$message.info("已取消删除");
-        });
+          this.$message.info('已取消删除')
+        })
     },
 
     // 分配角色
-    async allotRoles(userInfo) {
-      console.log(userInfo);
-      this.userInfo = userInfo;
+    async allotRoles (userInfo) {
+      console.log(userInfo)
+      this.userInfo = userInfo
       // 请求角色列表
-      const { data: res } = await this.$http.get("roles");
-      if (res.meta.status !== 200)
-        return this.$message.error("获取角色列表失败");
-      this.rolesList = res.data;
-      console.log("rolesList", this.rolesList);
+      const { data: res } = await this.$http.get('roles')
+      if (res.meta.status !== 200) { return this.$message.error('获取角色列表失败') }
+      this.rolesList = res.data
+      console.log('rolesList', this.rolesList)
 
-      this.allotDialogVisible = true;
+      this.allotDialogVisible = true
     },
 
     // 提交 分配角色
-    async saveRoleInfo() {
-      if (!this.selectRolesId) return this.$message.error("请选择要分配的角色");
+    async saveRoleInfo () {
+      if (!this.selectRolesId) return this.$message.error('请选择要分配的角色')
       const { data: res } = await this.$http.put(
         `users/${this.userInfo.id}/role`,
         {
           id: this.userInfo.id,
           rid: this.selectRolesId
         }
-      );
-      if (res.meta.status !== 200) return this.$message.error("角色分配失败");
-      this.$message.success("分配角色成功");
-      this.allotDialogVisible = false;
+      )
+      if (res.meta.status !== 200) return this.$message.error('角色分配失败')
+      this.$message.success('分配角色成功')
+      this.allotDialogVisible = false
 
-      this.getUserList();
+      this.getUserList()
     },
 
     // 监听分配用户对话框的关闭
-    allotRolesDialogClose() {
-      this.selectRolesId = "";
-      this.userInfo = {};
+    allotRolesDialogClose () {
+      this.selectRolesId = ''
+      this.userInfo = {}
     }
   }
-};
+}
 </script>
 
 <style lang='less' scoped>

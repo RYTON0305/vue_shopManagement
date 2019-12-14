@@ -106,40 +106,40 @@
 
 <script>
 export default {
-  name: "Roles",
+  name: 'Roles',
   filters: {
-    rolesLevelFilter(level) {
+    rolesLevelFilter (level) {
       switch (level) {
-        case "0":
-          return "一级";
-          break;
-        case "1":
-          return "二级";
-          break;
-        case "2":
-          return "三级";
-          break;
+        case '0':
+          return '一级'
+          break
+        case '1':
+          return '二级'
+          break
+        case '2':
+          return '三级'
+          break
         default:
-          return "无";
+          return '无'
       }
     },
-    rolesTypeFilter(level) {
+    rolesTypeFilter (level) {
       switch (level) {
-        case "0":
-          return "";
-          break;
-        case "1":
-          return "success";
-          break;
-        case "2":
-          return "danger";
-          break;
+        case '0':
+          return ''
+          break
+        case '1':
+          return 'success'
+          break
+        case '2':
+          return 'danger'
+          break
         default:
-          return "";
+          return ''
       }
     }
   },
-  data() {
+  data () {
     return {
       rolesList: [],
 
@@ -151,95 +151,94 @@ export default {
 
       // 树形控件的属性绑定对象
       treeProps: {
-        children: "children",
-        label: "authName"
+        children: 'children',
+        label: 'authName'
       },
 
       // 默认选中的权限数组
       defCheckedRights: [],
 
       // 即将分配角色的ID
-      roleId: ""
-    };
+      roleId: ''
+    }
   },
-  created() {
-    this.getRolesList();
+  created () {
+    this.getRolesList()
   },
   methods: {
-    getRolesList() {
+    getRolesList () {
       this.$http.get(`roles`).then(({ data: res }) => {
-        if (res.meta.status !== 200)
-          return this.$message.error("获取角色列表失败");
-        this.rolesList = res.data;
-        console.log(this.rolesList);
-      });
+        if (res.meta.status !== 200) { return this.$message.error('获取角色列表失败') }
+        this.rolesList = res.data
+        console.log(this.rolesList)
+      })
     },
-    deleteRightsById(role, rightsId) {
+    deleteRightsById (role, rightsId) {
       this.$msgBox
-        .confirm("此操作将永久删除该权限, 是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
+        .confirm('此操作将永久删除该权限, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
         .then(_ => {
           this.$http
             .delete(`roles/${role.id}/rights/${rightsId}`)
             .then(({ data: res }) => {
               if (res.meta.status !== 200) {
-                return this.$message.error("删除失败");
+                return this.$message.error('删除失败')
               }
-              this.$message.success("成功删除权限");
+              this.$message.success('成功删除权限')
 
               // this.getRolesList()会使页面重新渲染，导致打开的表格项目关闭，而delete请求的响应数据是最新的权限数据所以只需更改
-              role.children = res.data;
-            });
+              role.children = res.data
+            })
         })
         .catch(_ => {
-          this.$message.info("已取消删除");
-        });
+          this.$message.info('已取消删除')
+        })
     },
 
-    async showSetRightsDialog(role) {
-      this.roleId = role.id;
-      const { data: res } = await this.$http.get("rights/tree");
-      if (res.meta.status !== 200) return thie.$message.error("权限获取失败");
-      this.getLeapKeys(role, this.defCheckedRights);
-      this.rightsTree = res.data;
-      this.setRightsDialogVisible = true;
+    async showSetRightsDialog (role) {
+      this.roleId = role.id
+      const { data: res } = await this.$http.get('rights/tree')
+      if (res.meta.status !== 200) return thie.$message.error('权限获取失败')
+      this.getLeapKeys(role, this.defCheckedRights)
+      this.rightsTree = res.data
+      this.setRightsDialogVisible = true
     },
 
     // 递归获取该行角色下所有三级权限的id，并存取到数组中
-    getLeapKeys(node, arr) {
+    getLeapKeys (node, arr) {
       // 如果节点不包含子节点，则为三级节点
       if (!node.children) {
-        return arr.push(node.id);
+        return arr.push(node.id)
       }
-      node.children.forEach(item => this.getLeapKeys(item, arr));
+      node.children.forEach(item => this.getLeapKeys(item, arr))
     },
 
     // 监听分配角色对话框的关闭事件
-    setRightsDialogClose() {
-      this.defCheckedRights = [];
+    setRightsDialogClose () {
+      this.defCheckedRights = []
     },
 
     // 分配角色权限
-   async allotRights() {
+    async allotRights () {
       const keys = [
         ...this.$refs.treeRef.getCheckedKeys(),
         ...this.$refs.treeRef.getHalfCheckedKeys()
-      ];
-      const idStr = keys.join(",");
-      console.log(keys);
+      ]
+      const idStr = keys.join(',')
+      console.log(keys)
       const { data: res } = await this.$http.post(`roles/${this.roleId}/rights`, {
         rids: idStr
-      });
-      if (res.meta.status !== 200) return this.$message.error("分配权限失败");
-      this.$message.success("分配权限成功");
-      this.getRolesList();
-      this.setRightsDialogVisible = false;
+      })
+      if (res.meta.status !== 200) return this.$message.error('分配权限失败')
+      this.$message.success('分配权限成功')
+      this.getRolesList()
+      this.setRightsDialogVisible = false
     }
   }
-};
+}
 </script>
 
 <style lang='less' scoped>

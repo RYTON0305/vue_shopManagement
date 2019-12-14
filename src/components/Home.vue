@@ -56,40 +56,40 @@
 
 <script>
 export default {
-  name: "Home",
-  data() {
+  name: 'Home',
+  data () {
     return {
       menuList: [],
       iconsObj: {
-        "125": "iconfont icon-user",
-        "103": "iconfont icon-tijikongjian",
-        "101": "iconfont icon-shangpin",
-        "102": "iconfont icon-danju",
-        "145": "iconfont icon-baobiao"
+        '125': 'iconfont icon-user',
+        '103': 'iconfont icon-tijikongjian',
+        '101': 'iconfont icon-shangpin',
+        '102': 'iconfont icon-danju',
+        '145': 'iconfont icon-baobiao'
       },
       isCollapase: false
-    };
+    }
   },
   methods: {
-    loginOut() {
-      window.sessionStorage.clear();
-      this.$router.push("/login");
+    loginOut () {
+      window.sessionStorage.clear()
+      this.$router.push('/login')
     },
-    async getMenuList() {
-      const { data: res } = await this.$http.get("menus");
-      if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
-      this.menuList = res.data;
+    async getMenuList () {
+      const { data: res } = await this.$http.get('menus')
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.menuList = res.data
       // console.log("res", res);
       // console.log(this.menuList);
     },
-    toggleCollapse() {
-      this.isCollapase = !this.isCollapase;
+    toggleCollapse () {
+      this.isCollapase = !this.isCollapase
     }
   },
-  created() {
-    this.getMenuList();
+  created () {
+    this.getMenuList()
   }
-};
+}
 </script>
 
 <style lang='less' scoped>

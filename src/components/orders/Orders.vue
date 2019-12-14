@@ -100,13 +100,13 @@
   </div>
 </template>
 <script>
-import cityOptions from "@/assets/provinces-china/city_data2017_element.js";
+import cityOptions from '@/assets/provinces-china/city_data2017_element.js'
 export default {
-  name: "Orders",
-  data() {
+  name: 'Orders',
+  data () {
     return {
       queryInfo: {
-        query: "",
+        query: '',
         pagenum: 1,
         pagesize: 5
       },
@@ -117,21 +117,21 @@ export default {
       editDialogVisible: false,
       addressForm: {
         address1: [],
-        address2: ""
+        address2: ''
       },
       addressRules: {
         address1: [
           {
             required: true,
-            message: "请选择省/区市县",
-            trigger: "blur"
+            message: '请选择省/区市县',
+            trigger: 'blur'
           }
         ],
         address2: [
           {
             required: true,
-            message: "请输入详细地址",
-            trigger: "blur"
+            message: '请输入详细地址',
+            trigger: 'blur'
           }
         ]
       },
@@ -144,52 +144,52 @@ export default {
 
       // 物流信息列表
       logisticInfo: []
-    };
+    }
   },
-  created() {
-    this.getOrdersList();
+  created () {
+    this.getOrdersList()
   },
   methods: {
-    handleSizeChange(newSize) {
-      this.queryInfo.pagesize = newSize;
-      this.getOrdersList();
+    handleSizeChange (newSize) {
+      this.queryInfo.pagesize = newSize
+      this.getOrdersList()
     },
-    handleCurrentChange(newNum) {
-      this.queryInfo.pagenum = newNum;
+    handleCurrentChange (newNum) {
+      this.queryInfo.pagenum = newNum
     },
-    async getOrdersList() {
-      const { data: res } = await this.$http.get("orders", {
+    async getOrdersList () {
+      const { data: res } = await this.$http.get('orders', {
         params: this.queryInfo
-      });
-      if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
+      })
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       // this.$message.success(res.meta.msg)
-      this.ordersList = res.data.goods;
-      this.total = res.data.total;
-      console.log(res.data);
+      this.ordersList = res.data.goods
+      this.total = res.data.total
+      console.log(res.data)
     },
 
-    editOrders() {
-      this.editDialogVisible = true;
+    editOrders () {
+      this.editDialogVisible = true
     },
 
-    editDialogClose() {
-      this.$refs.addressFormRef.resetFields();
+    editDialogClose () {
+      this.$refs.addressFormRef.resetFields()
     },
 
-    changeProvince() {},
+    changeProvince () {},
     // 展示物流信息
-    async showLogisticsProgress() {
-      this.logisticsDialogVisible = true;
+    async showLogisticsProgress () {
+      this.logisticsDialogVisible = true
 
-      const { data: res } = await this.$http.get("/kuaidi/1106975712662");
-      console.log(res);
-      if (res.meta.status !== 200) return this.$message.error(res.meta.message);
-      this.logisticInfo = res.data;
-      console.log(this.logisticInfo);
+      const { data: res } = await this.$http.get('/kuaidi/1106975712662')
+      console.log(res)
+      if (res.meta.status !== 200) return this.$message.error(res.meta.message)
+      this.logisticInfo = res.data
+      console.log(this.logisticInfo)
       // this.$message.success(res.meta.message);
     }
   }
-};
+}
 </script>
 <style lang='less' scoped>
 @import '../../plugins/timeline/timeline.css';

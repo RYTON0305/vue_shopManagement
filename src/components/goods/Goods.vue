@@ -74,115 +74,114 @@
 
 <script>
 export default {
-  name: "Users",
-  data() {
+  name: 'Users',
+  data () {
     return {
       // 获取商品参数列表的对象
       queryInfo: {
-        query: "",
+        query: '',
         pagenum: 1,
         pagesize: 10
       },
       goodsList: [],
       total: 0
-    };
+    }
   },
-  created() {
-    this.getGoodsList();
+  created () {
+    this.getGoodsList()
   },
   methods: {
-    async getGoodsList() {
-      const { data: res } = await this.$http.get("goods", {
+    async getGoodsList () {
+      const { data: res } = await this.$http.get('goods', {
         params: this.queryInfo
-      });
-      console.log(res);
-      if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
-      this.goodsList = res.data.goods;
-      this.total = res.data.total;
+      })
+      console.log(res)
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.goodsList = res.data.goods
+      this.total = res.data.total
       // this.$message.success("获取商品列表成功");
     },
     // 监听pagesize改变的事件
-    handleSizeChange(newSize) {
-      console.log(newSize);
-      this.queryInfo.pagesize = newSize;
-      this.getGoodsList();
+    handleSizeChange (newSize) {
+      console.log(newSize)
+      this.queryInfo.pagesize = newSize
+      this.getGoodsList()
     },
     // 监听页码值改变的事件
-    handleCurrentChange(newPage) {
-      console.log(newPage);
-      this.queryInfo.pagenum = newPage;
-      this.getGoodsList();
+    handleCurrentChange (newPage) {
+      console.log(newPage)
+      this.queryInfo.pagenum = newPage
+      this.getGoodsList()
     },
 
-goAddPage(){
-  this.$router.push('/goods/addGoods')
-},
+    goAddPage () {
+      this.$router.push('/goods/addGoods')
+    },
     // 展示修改商品 的对话框
-    showEditDialog(id) {
-      this.editDialogVisible = true;
+    showEditDialog (id) {
+      this.editDialogVisible = true
       this.$http.get(`users/${id}`).then(({ data: res }) => {
-        console.log(res);
-        if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
+        console.log(res)
+        if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
         // this.$message.success(res.meta.msg)
         // console.log('qian',this.editForm)
 
-        this.editForm = res.data;
-        console.log("editForm", this.editForm);
-      });
+        this.editForm = res.data
+        console.log('editForm', this.editForm)
+      })
     },
 
     // 监听修改商品 对话框关闭的操作
-    editDialogClose() {
+    editDialogClose () {
       // this.$msgBox
       //   .confirm("确认关闭？")
       //   .then(_ => {
       //     done();
       //   })
       //   .catch(_ => {});
-      this.$refs.editFormRef.resetFields();
+      this.$refs.editFormRef.resetFields()
     },
 
     // 修改商品表单 提交
-    editFormChange() {
+    editFormChange () {
       this.$refs.editFormRef.validate(valid => {
-        if (!valid) return;
+        if (!valid) return
         this.$http
           .put(`users/${this.editForm.id}`, {
             mobile: this.editForm.mobile,
             email: this.editForm.email
           })
           .then(({ data: res }) => {
-            console.log("res", res);
-            if (res.meta.status !== 200)
-              return this.$message.error("更新商品信息失败");
-            this.editDialogVisible = false;
-            this.getGoodsList();
-            this.$message.success("修改成功");
-          });
-      });
+            console.log('res', res)
+            if (res.meta.status !== 200) { return this.$message.error('更新商品信息失败') }
+            this.editDialogVisible = false
+            this.getGoodsList()
+            this.$message.success('修改成功')
+          })
+      })
     },
 
     // 删除商品
-    deleteGoodsById(id) {
+    deleteGoodsById (id) {
       this.$msgBox
-        .confirm("此操作将永久删除该商品, 是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
+        .confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
         .then(_ => {
           this.$http.delete(`goods/${id}`, id).then(({ data: res }) => {
-            if (res.meta.status !== 200) return this.$message.error("删除失败");
-          });
-          this.$message.success("删除成功");
-          this.getGoodsList();
+            if (res.meta.status !== 200) return this.$message.error('删除失败')
+          })
+          this.$message.success('删除成功')
+          this.getGoodsList()
         })
         .catch(_ => {
-          this.$message.info("已取消删除");
-        });
+          this.$message.info('已取消删除')
+        })
     }
   }
-};
+}
 </script>
 
 <style lang='less' scoped>

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-
 Vue.use(VueRouter)
 
 const routes = [
@@ -39,23 +38,23 @@ const routes = [
       },
       {
         path: '/goods',
-        component: () => import('@/components/goods/Goods'),
+        component: () => import('@/components/goods/Goods')
       },
       {
         path: '/goods/addGoods',
-        component: () => import('@/components/goods/AddGoods'),
+        component: () => import('@/components/goods/AddGoods')
       },
       {
         path: '/orders',
-        component: () => import('@/components/orders/Orders'),
-      }, 
+        component: () => import('@/components/orders/Orders')
+      },
       {
         path: '/reports',
-        component: () => import('@/components/reports/Reports'),
-      },
+        component: () => import('@/components/reports/Reports')
+      }
     ],
     redirect: '/welcome'
-  },
+  }
   // {
   //   path: '*',
   //   redirect: '/login'
