@@ -1,21 +1,21 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import './plugins/element.js'
+// import './plugins/element.js'
 import '@/assets/css/global.css'
 import '@/assets/fonts/iconfont.css'
 import axios from 'axios'
 import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
+// import 'nprogress/nprogress.css'
 
 import TreeTable from 'vue-table-with-tree-grid'
 
 import VueQuillEditor from 'vue-quill-editor'
 
 // require styles
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
+// import 'quill/dist/quill.core.css'
+// import 'quill/dist/quill.snow.css'
+// import 'quill/dist/quill.bubble.css'
 Vue.component('tree-table', TreeTable)
 Vue.filter('dateFormat', (originVal) => {
   const dt = new Date(originVal)
